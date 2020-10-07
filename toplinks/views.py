@@ -55,7 +55,7 @@ def home(request):
         # monitoring api call rate limit so that it wont exceed twitter's max-call-limit
         # more detail about json response can be found here - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/overview/tweet-object
 
-        for tweet in tweepy.Cursor(api.home_timeline, tweet_mode="extended", monitor_rate_limit=True).items(50):
+        for tweet in tweepy.Cursor(api.home_timeline, tweet_mode="extended", monitor_rate_limit=True).items(100):
             # getting tweets from last 7 days
             if tweet.created_at > startDate:
                 # to check if tweet's body contain any url or link
