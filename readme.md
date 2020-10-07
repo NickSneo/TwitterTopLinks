@@ -21,12 +21,13 @@ This webapp fulfills the following functionalities.
 ## Table of Contents
 
 1. [Pre-Requisites](#Pre-Requisites)
-2. [Setup and Installation](#installation)
-3. [Tech Stack Used](#tech-stack-used)
-4. [Features and Implementation](#Features-and-Implementation)
-5. [Working with the app](#Working-with-the-app)
-6. [Working Demo](#Working-Demo)
-7. [Contact Me](#contact-me)
+2. [Setup and Installation](#Installation)
+3. [Starting the Project](#Starting-the-project)
+4. [Tech Stack Used](#tech-stack-used)
+5. [Features and Implementation](#Features-and-Implementation)
+6. [Working with the app](#Working-with-the-app)
+7. [Working Demo](#Working-Demo)
+8. [Contact Me](#contact-me)
 
 ## Pre-Requisites
 
@@ -35,14 +36,14 @@ This webapp fulfills the following functionalities.
 - PIP Packages should be installed on your system
 - Developer account on Twitter for Secret Keys
 
-## installation
+## Installation
 
 To run the app locally follow the below steps :
 
 - Clone the repository.
 
 ```
-git clone https://github.com/dhruv-gupta14/Twitter-Toplinks.git
+git clone https://github.com/NickSneo/TwitterTopLinks.git
 ```
 
 - Run the following command -
@@ -79,7 +80,17 @@ SOCIAL_AUTH_TWITTER_SECRET=Your_Consumer_Secret_Without_Space_and_Qoutes
 SECRET_KEY=Your_Secret_Key_Without_Space_and_Qoutes
 ```
 
-## Technology Stack
+## Starting the Project
+
+- Start the project using -
+
+```
+python3 manage.py runserver
+```
+
+- Browse to http://127.0.0.1:8000/ to see your web app.
+
+## Tech Stack Used
 
 **Frontend**
 
@@ -105,32 +116,22 @@ SECRET_KEY=Your_Secret_Key_Without_Space_and_Qoutes
 - tld - top level domain (python library for extracting domain name)
 - Google's Chart API - to create Pie Chart
 
-## Starting the Project
-
-- Start the project using -
-
-```
-python3 manage.py runserver
-```
-
-- Browse to http://127.0.0.1:8000/ to see your web app.
-
 ## Features and Implementation
 
 - After starting the server, the landing page will ask you to `Login Through Twitter`
-- You wont be able to aceess anything before logining with the twitter on this `Login Page`
+- You wont be able to aceess anything before login on this `Login Page`
 - After clicking on `Login with Twitter` button, you will be `redirected to Twitter's login page` to authenticate your account.
-- After successful `authentication` you will land on the `home page`
+- After successful `authentication` you will taken to the `home page`
 - On the `Home page` you will see all the analysis of your account
-- The analysis includ `extracting you home timeline's tweets from last 7 days` and then displaying only the tweets that contain Links.
-- In the backgroud, `Tweepy` was used to extract your home timelines tweets
-- `Tweets containing links` are then stored in Tweets Database implemented using sqlite3
-- Also all the shared `urls/links` are stored in urls database.
-- After storing user's data in database, we extract this data to `calculate the top users and domain`
+- The analysis include `extracting you home timeline's tweets from last 7 days` and then displaying only the tweets that contain Links.
+- In the backgroud, `Tweepy` is used to extract your home timeline's tweets
+- `Tweets containing links` are then stored in `Tweets Database` implemented using sqlite3
+- Also all the shared `urls/links` are stored in `urls database`.
+- After storing user's data in database, we extract this data to `calculate the top users and domains`
 - On the home page you will also get the functionality to go to the `original tweet link on twitter` using `go to tweet button`
 - You can also go to `top user's profile on twitter` using `go to profile button `
-- A `beautiful pie chart` shows all the information about `top domain name shared with their frequency`
-- Clicking on `logout` button user can logout his account.
+- A `beautiful pie chart` shows all the information about `top domains shared with their frequency`
+- By Clicking on `logout` button, user can logout his account.
 - After logging out, user will be `redirected to login page`
 - Data Structures used - `Dictionary` for frequnecy and top user and top domain calculation, `List` for storing the tweets and users.
 
@@ -139,11 +140,11 @@ python3 manage.py runserver
 **Login Page**
 
 - Clicking on Login with Twitter Button will take you to Twitter's Authorization Page.
-  ![Login Page](images-videos/loginPage.png "Login Page")
+  ![Login Page](images-videos/LoginPage.png "Login Page")
   > Login Page
 
 **Twitter's Login Page**
-![Twitter Login](images-videos/TwitterAuthOage.png "Twitter's Login Page")
+![Twitter Login](images-videos/TwitterAuthPage.png "Twitter's Login Page")
 
 > Twitter's Login Page
 
@@ -155,13 +156,13 @@ python3 manage.py runserver
 **Home Page**
 
 - Home Page containg three dropdown card - Tweets containg links, Top Users, and Top Domains
-  ![Home Page](images-videos/HomePage.png "Dashboard Page")
+  ![Home Page](images-videos/HomePage.png "Home Page")
 
   > Home Page View
 
 - Expanded `Tweets` dropdown card containing tweeted user's screen name, tweet's text and go to tweet button
 
-![Tweets](images-videos/HomePage.png "Tweets")
+![Tweets](images-videos/Tweets.png "Tweets")
 
 > Expanded Tweets
 
