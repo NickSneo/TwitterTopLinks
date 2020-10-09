@@ -1,3 +1,4 @@
 .env
 Pipfile
 db.sqlite3
+Pipfile.lock

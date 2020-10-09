@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 # model to store tweets
 class tweetsDB(models.Model):
-    user = models.CharField(blank=False, max_length=20)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     tweet_id = models.IntegerField(blank=False)
     tweet_text = models.TextField(blank=False)
     tweeted_user = models.CharField(blank=False, max_length=20)
@@ -15,6 +15,6 @@ class tweetsDB(models.Model):
 
 # model to store urls
 class urlsDB(models.Model):
-    user = models.CharField(blank=False, max_length=20)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     tweeted_user = models.CharField(blank=False, max_length=20)
     url = models.URLField(blank=False, max_length=200)

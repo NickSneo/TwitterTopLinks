@@ -17,14 +17,15 @@ import tweepy
 
 # importing python's built-in modules
 import requests
+import pytz
 import re
 import datetime
 from collections import defaultdict
 
 
 # Set your consumer_key and consumer_secret of twitter api in .env file in root directory
-consumer_key = config('SOCIAL_AUTH_TWITTER_KEY')
-consumer_secret = config('SOCIAL_AUTH_TWITTER_SECRET')
+consumer_key = config("SOCIAL_AUTH_TWITTER_KEY")
+consumer_secret = config("SOCIAL_AUTH_TWITTER_SECRET")
 
 
 @login_required(login_url="/loginUser")
@@ -46,7 +47,8 @@ def home(request):
         api = tweepy.API(auth, wait_on_rate_limit=True)
 
         # startDate = last 7 days from today
-        startDate = datetime.datetime.now() - datetime.timedelta(days=7)
+        startDate = pytz.utc.localize(
+            datetime.datetime.now() - datetime.timedelta(days=7))
 
         ############# Logic for extracting tweets thorugh twitter api and storing relevant info in Database Starts Here #############
 
@@ -55,9 +57,11 @@ def home(request):
         # monitoring api call rate limit so that it wont exceed twitter's max-call-limit
         # more detail about json response can be found here - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/overview/tweet-object
 
-        for tweet in tweepy.Cursor(api.home_timeline, tweet_mode="extended", monitor_rate_limit=True).items(100):
+        for tweet in tweepy.Cursor(api.home_timeline, tweet_mode="extended", monitor_rate_limit=True).items(50):
             # getting tweets from last 7 days
-            if tweet.created_at > startDate:
+            # converting the created_time to my local timezone, so that it becomes easy to compare
+            aware_created_at = pytz.utc.localize(tweet.created_at)
+            if aware_created_at > startDate:
                 # to check if tweet's body contain any url or link
                 # if user shared no link in his tweet than tweet.entities['urls'] becomes false
                 if tweet.entities['urls']:
@@ -70,7 +74,7 @@ def home(request):
                         # authenticated user's name, tweet id, user who tweeted, tweet's text and time when this tweet was created
                         # is stored in our tweetsDB (tweets database)
                         tweet_put = tweetsDB(
-                            user=request.user.username, tweet_id=tweet.id, tweeted_user=tweet.user.screen_name, tweet_text=tweet.full_text, date_time=tweet.created_at)
+                            user=request.user, tweet_id=tweet.id, tweeted_user=tweet.user.screen_name, tweet_text=tweet.full_text, date_time=aware_created_at)
                         tweet_put.save()
 
                         # now as a tweet can contain many links/url
@@ -78,7 +82,7 @@ def home(request):
                         # and store them in our urlsDB (urls database)
                         for url in tweet.entities['urls']:
                             url_put = urlsDB(
-                                user=request.user.username, tweeted_user=tweet.user.screen_name, url=url['expanded_url'], )
+                                user=request.user, tweeted_user=tweet.user.screen_name, url=url['expanded_url'], )
                             url_put.save()
             else:
                 break
@@ -101,12 +105,12 @@ def home(request):
         # only those tweets will be extracted which are linked to our Authenticated user's profile(home timeline)
         # suppose many users and client use our webapp then it is important to extract data only from our
         # autheticated user's profile
-        q1 = tweetsDB.objects.filter(user=request.user.username)
+        q1 = tweetsDB.objects.filter(user=request.user)
         # extracting those tweets only which were created in last 7 days
         # and appending it to tweetDataBase list
         # then we will pass this to our home.html template
         for result in q1:
-            if result.date_time.replace(tzinfo=None) > startDate.replace(tzinfo=None):
+            if result.date_time > startDate:
                 tweetDataBase.append(
                     [result.tweeted_user, result.tweet_text, result.tweet_id])
 
@@ -116,7 +120,7 @@ def home(request):
         # understanding the above comment and its importance is very crucial
         # suppose many users and client use our webapp then it is important to extract data only from our
         # autheticated user's profile
-        q2 = urlsDB.objects.filter(user=request.user.username)
+        q2 = urlsDB.objects.filter(user=request.user)
 
         # processing the query to get the user and his frequqncy of links/urls shared
         # also processing the domain name and its frequency
